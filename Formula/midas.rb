@@ -8,11 +8,10 @@ class Midas < Formula
   license "GPL-1.0-only"
 
   bottle do
-    bottle do
-      sha256 arm64_sonoma:   "52ebc420074f1a2ed7b30f8368cac429a8a67a1fd426cc2a3768c5d63c521464"
-      sha256 sonoma:         "936e4d4a64495017bfa149f974c6e3017433fe4638989e20ede886fc232c3c70"
-      sha256 x86_64_linux:   "795b59b8f4ed714b3d8b91ea8b3a235c8771779897d9b49331f4f0a2b36f0c8b"
-    end
+    sha256 arm64_sonoma:   "52ebc420074f1a2ed7b30f8368cac429a8a67a1fd426cc2a3768c5d63c521464"
+    sha256 sonoma:         "936e4d4a64495017bfa149f974c6e3017433fe4638989e20ede886fc232c3c70"
+    sha256 x86_64_linux:   "795b59b8f4ed714b3d8b91ea8b3a235c8771779897d9b49331f4f0a2b36f0c8b"
+  end
 
   depends_on "cmake" => :build
   depends_on "gcc" => :build
