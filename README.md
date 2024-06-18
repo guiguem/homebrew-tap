@@ -13,6 +13,12 @@ tap "guiguem/tap"
 brew "<formula>"
 ```
 
+## Add a new formula
+
+```bash
+brew create --cmake https://<URL>/<package>.git --tap guiguem/tap --set-version <version>
+```
+
 ## Documentation
 
 `brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
