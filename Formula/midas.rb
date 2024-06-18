@@ -5,13 +5,12 @@ class Midas < Formula
     tag: "midas-2022-05-c"
   version "midas-2022-05-c"
   sha256 "788b05d43b28c4459028df75f6f786170e6d59f820994d9c1b17405731fffa62"
-  license "GNU General Public License"
+  license "GPL-1.0-only"
 
   depends_on "cmake" => :build
   depends_on "gcc" => :build
 
   def install
-
     args = std_cmake_args + %w[
       -D CMAKE_POSITION_INDEPENDENT_CODE=ON
       -D NO_ROOT=1
