@@ -15,6 +15,7 @@ class Midas < Formula
 
   depends_on "cmake" => :build
   depends_on "gcc" => :build
+  depends_on "mysql"
 
   def install
     args = std_cmake_args + %w[
