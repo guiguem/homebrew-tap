@@ -2,7 +2,8 @@ class Midas < Formula
   desc "Modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
   url "https://bitbucket.org/tmidas/midas.git",
-    tag: "midas-2022-05-c"
+    tag: "midas-2022-05-c",
+    revision: "fbd06ad9d665b1341bd58b0e28d6625877f3cbd0"
   version "midas-2022-05-c"
   sha256 "788b05d43b28c4459028df75f6f786170e6d59f820994d9c1b17405731fffa62"
   license "GPL-1.0-only"
