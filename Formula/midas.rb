@@ -16,6 +16,9 @@ class Midas < Formula
   depends_on "cmake" => :build
   depends_on "gcc" => :build
   depends_on "mysql"
+  depends_on "openssl@3"
+  depends_on "zlib"
+  depends_on "zstd"
 
   def install
     args = std_cmake_args + %w[
@@ -38,6 +41,6 @@ class Midas < Formula
     #
     # The installed folder is not in the path, so use the entire path to any
     # executables being tested: `system "#{bin}/program", "do", "something"`.
-    system "false"
+    system "odbedit --help"
   end
 end
