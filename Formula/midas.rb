@@ -17,6 +17,7 @@ class Midas < Formula
   depends_on "gcc" => :build
   depends_on "mysql"
   depends_on "openssl@3"
+  depends_on "unixodbc"
   depends_on "zlib"
   depends_on "zstd"
 
