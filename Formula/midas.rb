@@ -8,9 +8,9 @@ class Midas < Formula
   license "GPL-1.0-only"
 
   bottle do
-    sha256 arm64_sonoma:   "52ebc420074f1a2ed7b30f8368cac429a8a67a1fd426cc2a3768c5d63c521464"
-    sha256 sonoma:         "936e4d4a64495017bfa149f974c6e3017433fe4638989e20ede886fc232c3c70"
-    sha256 x86_64_linux:   "795b59b8f4ed714b3d8b91ea8b3a235c8771779897d9b49331f4f0a2b36f0c8b"
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-midas-2022-05-c"
+    sha256 cellar: :any,                 ventura:      "3a219f0b8d4e301cee603240a83c71ce99f3b9df3cbb12894d53ec0e27f1095f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "97c5f4db0015620a66e9521653cc60bbbf9a53dc9b18cd5c3f4a5d7b67710b46"
   end
 
   depends_on "cmake" => :build
