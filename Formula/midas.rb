@@ -17,6 +17,7 @@ class Midas < Formula
   depends_on "gcc" => :build
   depends_on "mysql"
   depends_on "openssl@3"
+  depends_on "root"
   depends_on "unixodbc"
   depends_on "zlib"
   depends_on "zstd"
@@ -24,7 +25,7 @@ class Midas < Formula
   def install
     args = std_cmake_args + %w[
       -D CMAKE_POSITION_INDEPENDENT_CODE=ON
-      -D NO_ROOT=1
+      -D NO_ROOT=OFF
       -D CMAKE_CXX_STANDARD=17
     ]
     system "cmake", "-S", ".", "-B", "build", *args
