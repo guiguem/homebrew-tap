@@ -35,6 +35,16 @@ class Midas < Formula
     system "cmake", "--install", "build"
   end
 
+  def caveats
+    <<~EOS
+      You still need to define the exptab file and export the MIDAS_EXPTAB environment variable to use the midas executables correctly.
+      For bash users, you can run for example
+         export MIDAS_EXPTAB=$HOME/online/exptab
+      The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
+         echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
+    EOS
+  end
+
   test do
     # `test do` will create, run in and delete a temporary directory.
     #
