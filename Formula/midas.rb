@@ -9,8 +9,10 @@ class Midas < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-midas-2022-05-c"
-    sha256 cellar: :any,                 ventura:      "3a219f0b8d4e301cee603240a83c71ce99f3b9df3cbb12894d53ec0e27f1095f"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "97c5f4db0015620a66e9521653cc60bbbf9a53dc9b18cd5c3f4a5d7b67710b46"
+    rebuild 1
+    sha256 cellar: :any,                 arm64_sonoma: "981480434116056535c7aee074b7214637d6bb12827ecf4df542a8d2b3d1de68"
+    sha256 cellar: :any,                 ventura:      "e9a98b74308fc432da2eeb0532be4f8bfff341ac598f36e0ce7019fc07206c2d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "a8017fee562a8d931497ba95755f8adf1904ee747626fa4e9ca88fbc77259ba3"
   end
 
   depends_on "cmake" => :build
