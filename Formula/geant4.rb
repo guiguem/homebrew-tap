@@ -14,7 +14,6 @@ class Geant4 < Formula
   depends_on "libx11"
   depends_on "qt" => :optional
   depends_on "xerces-c" => :optional
-  depends_on "linuxbrew/xorg/glu" unless OS.mac?
 
   resource "G4NDL" do
     url "http://geant4.cern.ch/support/source/G4NDL.4.5.tar.gz"
