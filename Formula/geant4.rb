@@ -12,8 +12,8 @@ class Geant4 < Formula
   depends_on "cmake"
   depends_on "glfw"
   depends_on "libx11"
-  depends_on "xerces-c" => :optional
   depends_on "qt" => :optional
+  depends_on "xerces-c" => :optional
   depends_on "linuxbrew/xorg/glu" unless OS.mac?
 
   resource "G4NDL" do
