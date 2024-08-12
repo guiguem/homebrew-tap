@@ -10,9 +10,9 @@ class Geant4 < Formula
   option "with-usolids", "Use USolids (experimental)"
 
   depends_on "cmake"
-  depends_on "libx11"
   depends_on "glfw"
-  depends_on "xerces-c" if build.with? "gdml"
+  depends_on "libx11"
+  depends_on "xerces-c" => :optional
   depends_on "qt" => :optional
   depends_on "linuxbrew/xorg/glu" unless OS.mac?
 
