@@ -1,7 +1,7 @@
 class Fasterac < Formula
   desc "Minimal analysis library in C for FASTER DAQ System"
-  homepage "https://faster.in2p3.fr/index.php/installation/fasterac-package"
-  url "https://faster.in2p3.fr/index.php/download/category/2-software?download=28:fasterac-2-20-tar-gz"
+  homepage "https://faster.in2p3.fr"
+  url "https://github.com/guiguem/homebrew-tap/releases/download/fasterac-2-20-src/fasterac-2.20.1.tar.gz"
   sha256 "f15a41b2fb41ad417ed20126c2f93178aa526f526932c29c82b8064245be42a4"
   license "GPL-3.0-or-later"
 
