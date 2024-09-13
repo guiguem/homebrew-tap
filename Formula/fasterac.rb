@@ -7,6 +7,7 @@ class Fasterac < Formula
 
   depends_on "gcc" => :build
   depends_on "pkg-config" => :build
+  depends_on "zlib"
 
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args
