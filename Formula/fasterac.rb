@@ -3,16 +3,14 @@ class Fasterac < Formula
   homepage "https://faster.in2p3.fr/index.php/installation/fasterac-package"
   url "https://faster.in2p3.fr/index.php/download/category/2-software?download=28:fasterac-2-20-tar-gz"
   sha256 "f15a41b2fb41ad417ed20126c2f93178aa526f526932c29c82b8064245be42a4"
-  license "GNU General Public License"
+  license "GPL-3.0-or-later"
 
   depends_on "gcc" => :build
   depends_on "pkg-config" => :build
 
   def install
-    # Remove unrecognized options if they cause configure to fail
-    # https://rubydoc.brew.sh/Formula.html#std_configure_args-instance_method
     system "./configure", "--disable-silent-rules", *std_configure_args
-    system "make install"
+    system "make", "install"
   end
 
   test do
