@@ -28,6 +28,7 @@ class Midas < Formula
     args = std_cmake_args + %w[
       -D CMAKE_POSITION_INDEPENDENT_CODE=ON
       -D NO_ROOT=0
+      -D NO_PGSQL=1
       -D CMAKE_CXX_STANDARD=17
     ]
     system "cmake", "-S", ".", "-B", "build", *args
