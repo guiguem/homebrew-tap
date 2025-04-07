@@ -19,6 +19,7 @@ class Midas < Formula
   depends_on "gcc" => :build
   depends_on "mysql"
   depends_on "openssl@3"
+  depends_on "postgresql@14"
   depends_on "root"
   depends_on "unixodbc"
   depends_on "zlib"
@@ -28,6 +29,7 @@ class Midas < Formula
     args = std_cmake_args + %w[
       -D CMAKE_POSITION_INDEPENDENT_CODE=ON
       -D NO_ROOT=0
+      -D NO_PGSQL=0
       -D CMAKE_CXX_STANDARD=17
     ]
     system "cmake", "-S", ".", "-B", "build", *args
@@ -42,19 +44,11 @@ class Midas < Formula
          export MIDAS_EXPTAB=$HOME/online/exptab
       The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
+      where myexpt is the name of your experiment.
     EOS
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test midas`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
     system "#{bin}/odbedit", "--help"
   end
 end
