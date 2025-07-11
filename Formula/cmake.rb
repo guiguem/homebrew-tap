@@ -4,15 +4,6 @@ class Cmake < Formula
   url "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6.tar.gz"
   sha256 "653427f0f5014750aafff22727fb2aa60c6c732ca91808cfb78ce22ddd9e55f0"
   license "BSD-3-Clause"
-  head "https://gitlab.kitware.com/cmake/cmake.git", branch: "master"
-
-  # The "latest" release on GitHub has been an unstable version before, and
-  # there have been delays between the creation of a tag and the corresponding
-  # release, so we check the website's downloads page instead.
-  livecheck do
-    url "https://cmake.org/download/"
-    regex(/href=.*?cmake[._-]v?(\d+(?:\.\d+)+)\.t/i)
-  end
 
   bottle do
     sha256 cellar: :any_skip_relocation, arm64_sequoia: "9437c2dc6ed5b9bbc35b11c134acc8f67e6a4ae202b4147fcd8ec7f648bc92e9"
