@@ -1,7 +1,7 @@
 class Cmake < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
-  url "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6.tar.gz"
+  url "http://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6.tar.gz"
   sha256 "653427f0f5014750aafff22727fb2aa60c6c732ca91808cfb78ce22ddd9e55f0"
   license "BSD-3-Clause"
 
