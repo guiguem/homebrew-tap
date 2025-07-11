@@ -8,8 +8,8 @@ class Geant4 < Formula
   option "with-gdml", "Use GDML"
   option "with-usolids", "Use USolids (experimental)"
 
-  depends_on "guiguem/homebrew-tap/cmake"
   depends_on "glfw"
+  depends_on "guiguem/homebrew-tap/cmake"
   depends_on "libx11"
   depends_on "qt" => :optional
   depends_on "xerces-c" => :optional
