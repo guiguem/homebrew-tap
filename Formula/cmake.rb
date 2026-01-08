@@ -6,6 +6,13 @@ class Cmake < Formula
   sha256 "cf06fadfd6d41fa8e1ade5099e54976d1d844fd1487ab99942341f91b13d3e29"
   license "BSD-3-Clause"
 
+  bottle do
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/cmake-3.31.10"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "895a49b0d2fbbbd07c6716c9238b21e69c2e52bd1695f43700dd72b7850cf3db"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "260d5bf9edb2f2363adac8762a9bf386d9b5c662953fed51f70985fd5a02c92d"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "72bc028e6365934f186e1ea89a3b79c5b9ee86c12eded91b275b3223b585997c"
+  end
+
   uses_from_macos "ncurses"
 
   on_linux do
