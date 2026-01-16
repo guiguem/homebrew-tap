@@ -41,6 +41,12 @@ class Midas < Formula
     # Fix broken CMake export paths if they exist
     cmake_files = Dir["#{lib}/**/*manalyzer*.cmake"]
     cmake_files.each do |file|
+      inreplace file, %r{/private/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/private/tmp/midas-[^/"]+})
+      inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
+    end
+    cmake_files = Dir["#{lib}/**/*midas*.cmake"]
+    cmake_files.each do |file|
+      inreplace file, %r{/private/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/private/tmp/midas-[^/"]+})
       inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
     end
 
