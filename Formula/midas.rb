@@ -25,14 +25,29 @@ class Midas < Formula
   depends_on "zstd"
 
   def install
+    ENV["ROOTSYS"] = Formula["root"].opt_prefix
+
     args = std_cmake_args + %w[
       -D CMAKE_POSITION_INDEPENDENT_CODE=ON
       -D NO_ROOT=0
       -D CMAKE_CXX_STANDARD=17
     ]
+
     system "cmake", "-S", ".", "-B", "build", *args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
+
+    # Fix broken CMake export paths if they exist
+    cmake_files = Dir["#{lib}/**/*manalyzer*.cmake"]
+    cmake_files.each do |file|
+      inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
+    end
+
+    # Only wrap binaries if they exist in source tree
+    if (buildpath/"bin").exist?
+      libexec.install Dir["bin/*"]
+      bin.env_script_all_files libexec, PATH: "#{opt_bin}:$PATH"
+    end
   end
 
   def caveats
@@ -42,6 +57,8 @@ class Midas < Formula
          export MIDAS_EXPTAB=$HOME/online/exptab
       The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
+      You should also set the MIDASSYS variable so that other projects can find this version of midas:
+        export MIDASSYS=$(brew --prefix midas)
     EOS
   end
 
