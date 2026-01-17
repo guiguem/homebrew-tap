@@ -27,11 +27,17 @@ class Midas < Formula
   def install
     ENV["ROOTSYS"] = Formula["root"].opt_prefix
 
-    args = std_cmake_args + %w[
-      -D CMAKE_POSITION_INDEPENDENT_CODE=ON
-      -D NO_PGSQL=1
-      -D NO_ROOT=0
-      -D CMAKE_CXX_STANDARD=17
+    # Ensure CMake knows exactly where ROOT is
+    root_prefix = Formula["root"].opt_prefix
+    
+    args = std_cmake_args + %W[
+      -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+      -DNO_PGSQL=1
+      -DNO_ROOT=0
+      -DCMAKE_CXX_STANDARD=17
+      -DROOT_DIR=#{root_prefix}/cmake
+      -DCMAKE_INSTALL_RPATH=#{rpath}
+      -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON
     ]
 
     system "cmake", "-S", ".", "-B", "build", *args
