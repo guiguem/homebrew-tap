@@ -17,10 +17,11 @@ class Midas < Formula
 
   depends_on "cmake" => :build
   depends_on "gcc" => :build
-  depends_on "mysql"
+  depends_on "mariadb"
   depends_on "openssl@3"
   depends_on "postgresql@14"
   depends_on "root"
+  depends_on "sqlite"
   depends_on "unixodbc"
   depends_on "zlib"
   depends_on "zstd"
