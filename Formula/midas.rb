@@ -30,7 +30,7 @@ class Midas < Formula
 
     # Ensure CMake knows exactly where ROOT is
     root_prefix = Formula["root"].opt_prefix
-    
+
     args = std_cmake_args + %W[
       -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       -DNO_PGSQL=1
