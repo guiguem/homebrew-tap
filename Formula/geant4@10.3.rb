@@ -114,19 +114,7 @@ class Geant4AT103 < Formula
     # s.gsub!(/std::bind2nd\s*\(\s*std::divides\s*<\s*G4double\s*>\s*\(\s*\)\s*,\s*wtlen\.back\s*\(\s*\)\s*\)/,
     #         "[&wtlen](G4double val) { return val / wtlen.back(); }")
     # end
-    mkdir "geant-build" do
-      
-      args = %w[
-        ../
-        -DGEANT4_USE_OPENGL_X11=OFF
-        -DGEANT4_USE_RAYTRACER_X11=ON
-        -DGEANT4_BUILD_EXAMPLE=ON
-        -DGEANT4_INSTALL_DATA=OFF
-        -DGEANT4_BUILD_MULTITHREADED=OFF
-        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        -DGEANT4_USE_SYSTEM_ZLIB=ON
-        -DCMAKE_CXX_STANDARD=17
-      ]
+
        polyfill_path = buildpath/"g4_compat.h"
     polyfill_path.write <<~EOS
       #ifndef G4_COMPAT_H
@@ -207,6 +195,19 @@ class Geant4AT103 < Formula
       #endif
     EOS
 
+    mkdir "geant-build" do
+      
+      args = %w[
+        ../
+        -DGEANT4_USE_OPENGL_X11=OFF
+        -DGEANT4_USE_RAYTRACER_X11=ON
+        -DGEANT4_BUILD_EXAMPLE=ON
+        -DGEANT4_INSTALL_DATA=OFF
+        -DGEANT4_BUILD_MULTITHREADED=OFF
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        -DGEANT4_USE_SYSTEM_ZLIB=ON
+        -DCMAKE_CXX_STANDARD=17
+      ]
       args << "-DCMAKE_CXX_FLAGS=-include #{polyfill_path}"
 
       args << "-DGEANT4_USE_QT=ON" if build.with? "qt"
