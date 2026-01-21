@@ -139,7 +139,7 @@ class Geant4AT103 < Formula
       #include <iterator>
 
       namespace std {
-        // 1. Re-inject binary_function
+        // 1. Re-inject binary_function and unary_function
         template<typename _Arg1, typename _Arg2, typename _Result>
         struct binary_function {
           typedef _Arg1 first_argument_type;
@@ -147,14 +147,13 @@ class Geant4AT103 < Formula
           typedef _Result result_type;
         };
 
-        // 2. Re-inject unary_function (often needed by binders)
         template<typename _Arg, typename _Result>
         struct unary_function {
           typedef _Arg argument_type;
           typedef _Result result_type;
         };
 
-        // 3. Re-inject bind2nd and bind1st
+        // 2. Re-inject bind2nd and bind1st
         template<typename _Fn, typename _Tp>
         inline auto bind2nd(const _Fn& __f, const _Tp& __x) {
           return std::bind(__f, std::placeholders::_1, __x);
@@ -165,34 +164,44 @@ class Geant4AT103 < Formula
           return std::bind(__f, __x, std::placeholders::_1);
         }
 
-        // 4. Re-inject mem_fun AND mem_fun_ref
-        // Both can be safely redirected to mem_fn in C++17
+        // 3. Re-inject mem_fun AND mem_fun_ref (0 and 1 argument versions)
+        // 0-argument versions (Non-const and Const)
         template<typename _Ret, typename _Tp>
         inline auto mem_fun(_Ret (_Tp::*__f)()) { return std::mem_fn(__f); }
-        
         template<typename _Ret, typename _Tp>
         inline auto mem_fun_ref(_Ret (_Tp::*__f)()) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun(_Ret (_Tp::*__f)() const) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)() const) { return std::mem_fn(__f); }
 
-        // 5. Bridge random_shuffle to shuffle
+        // 1-argument versions (This fixes the G4INCLCDPP error)
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun(_Ret (_Tp::*__f)(_Arg)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun(_Ret (_Tp::*__f)(_Arg) const) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) { return std::mem_fn(__f); }
+
+        // 4. Bridge random_shuffle
         template<typename _RAI>
         inline void random_shuffle(_RAI __first, _RAI __last) {
-          std::random_device __rd;
-          std::mt19937 __g(__rd());
+          std::random_device __rd; std::mt19937 __g(__rd());
           std::shuffle(__first, __last, __g);
         }
-        
         template<typename _RAI, typename _RNG>
         inline void random_shuffle(_RAI __first, _RAI __last, _RNG&&) {
-          std::random_device __rd;
-          std::mt19937 __g(__rd());
+          std::random_device __rd; std::mt19937 __g(__rd());
           std::shuffle(__first, __last, __g);
         }
 
-        // 6. Add ptr_fun
+        // 5. Add ptr_fun
         template<typename _Arg, typename _Result>
-        inline auto ptr_fun(_Result (*__f)(_Arg)) {
-          return std::function<_Result(_Arg)>(__f);
-        }
+        inline auto ptr_fun(_Result (*__f)(_Arg)) { return std::function<_Result(_Arg)>(__f); }
+        template<typename _Arg1, typename _Arg2, typename _Result>
+        inline auto ptr_fun(_Result (*__f)(_Arg1, _Arg2)) { return std::function<_Result(_Arg1, _Arg2)>(__f); }
       }
       #endif
       #endif
@@ -207,7 +216,9 @@ class Geant4AT103 < Formula
       args.concat(std_cmake_args)
       system "cmake", *args
       system "make", "install"
+
     end
+      (include/"Geant4").install polyfill_path
   end
 
   def post_install
