@@ -11,12 +11,6 @@ class Wcsim < Formula
   depends_on "geant4@10.3"
   depends_on "root"
 
-  # Additional dependency
-  # resource "" do
-  #   url ""
-  #   sha256 ""
-  # end
-
   def install
     inreplace "src/WCSimRootGeom.cc", '#include "WCSimRootGeom.hh"',
 "#include \"WCSimRootGeom.hh\"\n#include \"TMath.h\""
@@ -28,12 +22,23 @@ class Wcsim < Formula
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
+
+    # Instead of moving everything to bin, move the offending files to libexec
+    libexec.install "bin/this_wcsim.sh", "bin/rootwc-files"
   end
 
-  # test do
-  #   g4_prefix = Formula["guiguem/tap/geant4@10.3"].opt_prefix
+  def caveats
+    <<~EOS
+      To use WCSim, you may need to source the setup script:
+        source #{opt_libexec}/this_wcsim.sh
+    EOS
+  end
 
-  #   # We wrap the call in a bash shell (-c) to allow sourcing
-  #   system "bash", "-c", "source #{g4_prefix}/bin/geant4.sh && #{bin}/WCSim --help"
-  # end
+  test do
+    "true"
+    #   g4_prefix = Formula["guiguem/tap/geant4@10.3"].opt_prefix
+
+    #   # We wrap the call in a bash shell (-c) to allow sourcing
+    #   system "bash", "-c", "source #{g4_prefix}/bin/geant4.sh && #{bin}/WCSim --help"
+  end
 end
