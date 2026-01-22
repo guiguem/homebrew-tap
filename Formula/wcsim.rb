@@ -27,18 +27,15 @@ class Wcsim < Formula
     # https://docs.brew.sh/rubydoc/Formula.html#std_configure_args-instance_method
 
     inreplace "src/WCSimRootGeom.cc", '#include "WCSimRootGeom.hh"', "#include \"WCSimRootGeom.hh\"\n#include \"TMath.h\""
-    # inreplace "CMakeLists.txt", "git describe --always --long --tags --dirty", "v1.12.29"
 
-    # g4_include = Formula["guiguem/tap/geant4@10.3"].opt_include/"Geant4"
+    g4_prefix = Formula["geant4@10.3"].opt_prefix
 
     args = std_cmake_args + %W[
           -DCMAKE_CXX_STANDARD=17
+          -DCMAKE_INSTALL_RPATH=#{lib};#{g4_prefix}/lib
+          -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON
           -DCMAKE_CXX_STANDARD_REQUIRED=ON
         ]
-    # args << "-DCMAKE_CXX_FLAGS=-include #{g4_include}/g4_compat.h"
-
-        # Force WCSim to also use the polyfill when it includes Geant4 headers
-        # ENV.append_to_cflags "-include #{g4_include}/g4_compat.h"
 
     system "cmake", "-S", ".", "-B", "build", *std_cmake_args
     system "cmake", "--build", "build"
