@@ -25,12 +25,12 @@ class Geant4AT103 < Formula
     sha256 "c97be73fece5fb4f73c43e11c146b43f651c6991edd0edf8619c9452f8ab1236"
   end
 
-  resource "G4PhotonEvaporation" do
+  resource "PhotonEvaporation" do
     url "http://geant4.cern.ch/support/source/G4PhotonEvaporation.4.3.2.tar.gz"
     sha256 "d4641a6fe1c645ab2a7ecee09c34e5ea584fb10d63d2838248bfc487d34207c7"
   end
 
-  resource "G4RadioactiveDecay" do
+  resource "RadioactiveDecay" do
     url "http://geant4.cern.ch/support/source/G4RadioactiveDecay.5.1.1.tar.gz"
     sha256 "f7a9a0cc998f0d946359f2cb18d30dff1eabb7f3c578891111fc3641833870ae"
   end
@@ -66,60 +66,12 @@ class Geant4AT103 < Formula
   end
 
   def install
-    # inreplace "source/geometry/management/include/G4SmartVoxelStat.hh" do |s|
-    # # Use a more flexible regex to catch the inheritance even if it spans lines
-    # # \s+ matches any whitespace (including newlines)
-    # s.gsub!(/:\s+public\s+std::binary_function\s*<[^>]+>/, "")
-    
-    # # Ensure we only replace the first 'public:' which defines the class body start
-    # s.sub!(/public:/, "public:\n    typedef G4SmartVoxelStat first_argument_type;\n    typedef G4SmartVoxelStat second_argument_type;\n    typedef G4bool result_type;")
-    # end
-
-    # hadronic_header = "source/processes/hadronic/models/de_excitation/multifragmentation/include/G4StatMFMicroCanonical.hh"
-    # inreplace hadronic_header do |s|
-    #     # Remove the inheritance
-    #     s.gsub!(/class\s+SumProbabilities\s*:\s*public\s*std::binary_function\s*<[^>]+>/, "class SumProbabilities")
-    #     # Add the typedefs required by the std::accumulate call later in the code
-    #     s.sub!(/class SumProbabilities\s*{/, "class SumProbabilities {\npublic:\n    typedef G4double first_argument_type;\n    typedef G4double second_argument_type;\n    typedef G4double result_type;")
-    # end
-
-    # hadronic_header = "source/processes/hadronic/models/de_excitation/multifragmentation/src/G4StatMFChannel.cc"
-    # inreplace hadronic_header do |s|
-    #     # Remove the inheritance
-    #     s.gsub!(/class\s+SumCoulombEnergy\s*:\s*public\s*std::binary_function\s*<[^>]+>/, "class SumCoulombEnergy")
-    #     # Add the typedefs required by the std::accumulate call later in the code
-    #     s.sub!(/class SumCoulombEnergy\s*{/, "class SumCoulombEnergy {\npublic:\n    typedef G4double first_argument_type;\n    typedef G4double second_argument_type;\n    typedef G4double result_type;")
-    # end
-
-    # interpolation_table = "source/processes/hadronic/models/inclxx/utils/src/G4INCLInterpolationTable.cc"
-
-    # inreplace interpolation_table do |s|
-    # # Replace std::mem_fun_ref(&InterpolationNode::getX)
-    # # with a lambda: [](const InterpolationNode& n) { return n.getX(); }
-    # s.gsub!(/std::mem_fun_ref\s*\(\s*&InterpolationNode::getX\s*\)/,
-    #         "[](const InterpolationNode& n) { return n.getX(); }")
-    # s.gsub!(/std::mem_fun_ref\s*\(\s*&InterpolationNode::getY\s*\)/,
-    #         "[](const InterpolationNode& n) { return n.getY(); }")
-    # end
-
-
-    # # Path to the file with the bind2nd error
-    # nuclei_model = "source/processes/hadronic/models/cascade/cascade/src/G4NucleiModel.cc"
-    # inreplace nuclei_model do |s|
-    # # We are replacing:
-    # # std::bind2nd(std::divides<G4double>(), wtlen.back())
-    # # with a lambda that does the same thing:
-    # # [wt_val = wtlen.back()](G4double val) { return val / wt_val; }
-    
-    # s.gsub!(/std::bind2nd\s*\(\s*std::divides\s*<\s*G4double\s*>\s*\(\s*\)\s*,\s*wtlen\.back\s*\(\s*\)\s*\)/,
-    #         "[&wtlen](G4double val) { return val / wtlen.back(); }")
-    # end
 
        polyfill_path = buildpath/"g4_compat.h"
     polyfill_path.write <<~EOS
       #ifndef G4_COMPAT_H
       #define G4_COMPAT_H
-      #ifdef __cplusplus
+      #if __cplusplus >= 201103L
       #include <algorithm>
       #include <functional>
       #include <random>
@@ -226,6 +178,39 @@ class Geant4AT103 < Formula
     resources.each do |r|
       (share/"Geant4-#{version}/data/#{r.name}#{r.version}").install r
     end
+
+    # Define the permanent path
+    permanent_include = include/"Geant4/g4_compat.h"
+    
+    # We use a wildcard to find the temp path because the random string 
+    # (e.g., geant4A10.3-20260122-...) changes every time.
+    # We look for files in 'bin' and 'lib/Geant4-10.3.3' (or similar)
+    
+    # Fix geant4-config script
+    if File.exist?(bin/"geant4-config")
+      inreplace bin/"geant4-config", %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+    end
+
+    # Fix Geant4Config.cmake and related CMake files
+    # These are usually in lib/Geant4-10.3.3/ or lib/cmake/Geant4/
+    Dir.glob("#{lib}/**/Geant4Config.cmake").each do |cmake_file|
+      inreplace cmake_file, %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+    end
+  end
+
+  def caveats
+    <<~EOS
+      As of Geant4 10.3, you need to source the `geant4` scripts in order
+      to set environment variables needed by the toolkit to locate physics
+      data libraries. These can be set through:
+
+      For bash users:
+        . $(brew --prefix geant4@10.3)/bin/geant4.sh
+      For zsh users:
+        pushd $(brew --prefix geant4@10.3) >/dev/null; . bin/geant4.sh; popd >/dev/null
+      For csh/tcsh users:
+        source $(brew --prefix geant4@10.3)/bin/geant4.csh
+    EOS
   end
 
   test do
