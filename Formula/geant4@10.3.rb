@@ -219,7 +219,7 @@ class Geant4AT103 < Formula
   end
 
   test do
-    system "cmake", share/"Geant4-#{version}/examples/basic/B1"
+    system "cmake", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5", share/"Geant4-#{version}/examples/basic/B1"
     system "make"
     (testpath/"test.sh").write <<~EOS
       . #{bin}/geant4.sh
