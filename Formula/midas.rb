@@ -2,9 +2,9 @@ class Midas < Formula
   desc "Modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
   url "https://gitlab.in2p3.fr/hk/clocks/midas.git",
-    tag:      "midas-mod-2025-04-a",
-    revision: "58b0f9f5d5d962f0957843c4a84b35f0d4eae25b"
-  version "midas-mod-2025-04-a"
+    tag:      "midas-mod-2025-12-a",
+    revision: "36f0d050d435923cfcdd83855adeb78cff8cf249"
+  version "midas-mod-2025-12-a"
   license "GPL-1.0-only"
 
   bottle do
