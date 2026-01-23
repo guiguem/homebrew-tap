@@ -7,10 +7,9 @@ class CmakeAT3 < Formula
   license "BSD-3-Clause"
 
   bottle do
-    root_url "https://github.com/guiguem/homebrew-tap/releases/download/cmake-3.31.10"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "895a49b0d2fbbbd07c6716c9238b21e69c2e52bd1695f43700dd72b7850cf3db"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "260d5bf9edb2f2363adac8762a9bf386d9b5c662953fed51f70985fd5a02c92d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "72bc028e6365934f186e1ea89a3b79c5b9ee86c12eded91b275b3223b585997c"
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/cmake@3-3.31.10"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "40de3abf180237e469bff6efcff35df47acb1ed5720d82947fc988b2e1859efa"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a457446cd90bf032c7e9fe6c60829889fcd5cde69663c04a9bd6c966abe7e869"
   end
 
   uses_from_macos "ncurses"
