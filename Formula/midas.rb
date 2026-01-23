@@ -9,31 +9,65 @@ class Midas < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-midas-mod-2025-04-a"
-    rebuild 2
-    sha256 cellar: :any,                 arm64_sequoia:  "7e95a2ae31fe5e53fcc7782ae1e8abc87b66cccdab4d514aebc9788d7362bdd8"
-    sha256 cellar: :any,                 arm64_sonoma:   "4f27d688fb1223aa3453a1c0e4ee5b1434a47798f87d11fdd1740e4770cc9bd5"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:   "d18b15d5ab9df34b2905336818cac45640890ab96e7df09e5e18b2ae4915db29"
+    rebuild 3
+    sha256 cellar: :any, arm64_sequoia: "bf101b4fa2a9c37551424a01ffde4802af82d71728e26fdbf9184c073f7be62f"
+    sha256 cellar: :any, arm64_sonoma:  "df3778b4ba6a99fac744961d20e09f4903a99f0afde12de48cf027a981f22a63"
   end
 
   depends_on "cmake" => :build
   depends_on "gcc" => :build
-  depends_on "mysql"
+  depends_on "mariadb"
   depends_on "openssl@3"
   depends_on "postgresql"
   depends_on "root"
+  depends_on "sqlite"
   depends_on "unixodbc"
   depends_on "zlib"
   depends_on "zstd"
 
   def install
-    args = std_cmake_args + %w[
-      -D CMAKE_POSITION_INDEPENDENT_CODE=ON
-      -D NO_ROOT=0
-      -D CMAKE_CXX_STANDARD=17
+    ENV["ROOTSYS"] = Formula["root"].opt_prefix
+
+    # Ensure CMake knows exactly where ROOT is
+    root_prefix = Formula["root"].opt_prefix
+
+    args = std_cmake_args + %W[
+      -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+      -DNO_PGSQL=1
+      -DNO_ROOT=0
+      -DCMAKE_CXX_STANDARD=17
+      -DROOT_DIR=#{root_prefix}/cmake
+      -DCMAKE_INSTALL_RPATH=#{rpath}
+      -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON
     ]
+
     system "cmake", "-S", ".", "-B", "build", *args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
+
+    # Fix broken CMake export paths if they exist
+    cmake_files = Dir["#{lib}/**/*manalyzer*.cmake"]
+    cmake_files.each do |file|
+      if File.read(file).match?(%r{/private/tmp/midas-[^/"]+})
+        inreplace file, %r{/private/tmp/midas-[^/"]+},
+prefix.to_s
+      end
+      inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
+    end
+    cmake_files = Dir["#{lib}/**/*midas*.cmake"]
+    cmake_files.each do |file|
+      if File.read(file).match?(%r{/private/tmp/midas-[^/"]+})
+        inreplace file, %r{/private/tmp/midas-[^/"]+},
+prefix.to_s
+      end
+      inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
+    end
+
+    # Only wrap binaries if they exist in source tree
+    if (buildpath/"bin").exist?
+      libexec.install Dir["bin/*"]
+      bin.env_script_all_files libexec, PATH: "#{opt_bin}:$PATH"
+    end
   end
 
   def caveats
@@ -43,6 +77,8 @@ class Midas < Formula
          export MIDAS_EXPTAB=$HOME/online/exptab
       The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
+      You should also set the MIDASSYS variable so that other projects can find this version of midas:
+        export MIDASSYS=$(brew --prefix midas)
     EOS
   end
 
