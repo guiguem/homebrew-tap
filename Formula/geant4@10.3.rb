@@ -162,6 +162,9 @@ class Geant4AT103 < Formula
            -DGEANT4_USE_SYSTEM_ZLIB=ON
            -DCMAKE_CXX_STANDARD=17
            -DCMAKE_CXX_STANDARD_REQUIRED=ON
+           -DCMAKE_INSTALL_RPATH=#{lib}
+           -DCMAKE_INSTALL_NAME_DIR=#{lib}
+           -DCMAKE_SKIP_INSTALL_RPATH=FALSE
          ]
          args << "-DCMAKE_CXX_FLAGS=-include #{polyfill_path}"
 
