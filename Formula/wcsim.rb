@@ -23,8 +23,13 @@ class Wcsim < Formula
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
 
-    # Instead of moving everything to bin, move the offending files to libexec
-    libexec.install "bin/this_wcsim.sh", "bin/rootwc-files"
+    #Create the libexec directory
+    (prefix/"libexec").mkpath
+
+    # Move the files from bin to libexec
+    # We use 'prefix' and 'bin' helpers which point to the Cellar paths shown in your logs
+    mv bin/"this_wcsim.sh", prefix/"libexec/"
+    mv bin/"rootwc-files", prefix/"libexec/"
   end
 
   def caveats
