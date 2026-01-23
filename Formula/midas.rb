@@ -2,9 +2,9 @@ class Midas < Formula
   desc "Modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
   url "https://gitlab.in2p3.fr/hk/clocks/midas.git",
-    tag:      "midas-mod-2025-04-a",
-    revision: "58b0f9f5d5d962f0957843c4a84b35f0d4eae25b"
-  version "midas-mod-2025-04-a"
+    tag:      "midas-mod-2025-12-a",
+    revision: "36f0d050d435923cfcdd83855adeb78cff8cf249"
+  version "midas-mod-2025-12-a"
   license "GPL-1.0-only"
 
   bottle do
@@ -18,6 +18,7 @@ class Midas < Formula
   depends_on "gcc" => :build
   depends_on "mariadb"
   depends_on "openssl@3"
+  depends_on "postgresql@14"
   depends_on "root"
   depends_on "sqlite"
   depends_on "unixodbc"
@@ -76,21 +77,13 @@ prefix.to_s
          export MIDAS_EXPTAB=$HOME/online/exptab
       The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
+      where myexpt is the name of your experiment.
       You should also set the MIDASSYS variable so that other projects can find this version of midas:
         export MIDASSYS=$(brew --prefix midas)
     EOS
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test midas`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
     system "#{bin}/odbedit", "--help"
   end
 end
