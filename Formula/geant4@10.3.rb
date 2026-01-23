@@ -4,6 +4,12 @@ class Geant4AT103 < Formula
   url "https://gitlab.cern.ch/geant4/geant4/-/archive/v10.3.3/geant4-v10.3.3.zip"
   sha256 "2f7b760221d0c076b49585dc2e418672f4f1f02c9dcd9dd4b3c2c581d1044a0f"
 
+  bottle do
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/geant4@10.3-10.3.3"
+    sha256 cellar: :any, arm64_sequoia: "8c213f3c7d679a81dc078b92a278002eefad987356ec89d7559e198bebb5556d"
+    sha256 cellar: :any, arm64_sonoma:  "e14a60db46c632dbf5c49bdb283eedf1286352af0142fe135d5fabd86de8400c"
+  end
+
   option "with-g3tog4", "Use G3toG4 Library"
   option "with-gdml", "Use GDML"
   option "with-usolids", "Use USolids (experimental)"
