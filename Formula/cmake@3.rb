@@ -2,7 +2,7 @@ class CmakeAT3 < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
   url "http://cmake.org/files/v3.31/cmake-3.31.10.tar.gz"
-  mirror "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.10.tar.gz"
+  mirror "https://github.com/Kitware/CMake/releases/download/v3.31.10/cmake-3.31.10.tar.gz"
   sha256 "cf06fadfd6d41fa8e1ade5099e54976d1d844fd1487ab99942341f91b13d3e29"
   license "BSD-3-Clause"
 

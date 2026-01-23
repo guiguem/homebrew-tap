@@ -15,6 +15,14 @@ class Geant4AT103 < Formula
   depends_on "qt" => :optional
   depends_on "xerces-c" => :optional
 
+  on_macos do
+    if MacOS.version >= :sequoia
+      depends_on "libice"
+      depends_on "libsm"
+      depends_on "libxext"
+    end
+  end
+
   resource "G4NDL" do
     url "http://geant4.cern.ch/support/source/G4NDL.4.5.tar.gz"
     sha256 "cba928a520a788f2bc8229c7ef57f83d0934bb0c6a18c31ef05ef4865edcdf8e"
