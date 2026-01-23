@@ -100,37 +100,35 @@ class Geant4AT103 < Formula
              typedef _Result result_type;
            };
 
-           // 2. Re-inject bind2nd and bind1st
+           // 2. Re-inject bind2nd and bind1st with trailing return types
            template<typename _Fn, typename _Tp>
-           inline auto bind2nd(const _Fn& __f, const _Tp& __x) {
+           inline auto bind2nd(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, std::placeholders::_1, __x)) {
              return std::bind(__f, std::placeholders::_1, __x);
            }
 
            template<typename _Fn, typename _Tp>
-           inline auto bind1st(const _Fn& __f, const _Tp& __x) {
+           inline auto bind1st(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, __x, std::placeholders::_1)) {
              return std::bind(__f, __x, std::placeholders::_1);
            }
 
-           // 3. Re-inject mem_fun AND mem_fun_ref (0 and 1 argument versions)
-           // 0-argument versions (Non-const and Const)
+           // 3. Re-inject mem_fun AND mem_fun_ref
            template<typename _Ret, typename _Tp>
-           inline auto mem_fun(_Ret (_Tp::*__f)()) { return std::mem_fn(__f); }
+           inline auto mem_fun(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)()) { return std::mem_fn(__f); }
+           inline auto mem_fun_ref(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp>
-           inline auto mem_fun(_Ret (_Tp::*__f)() const) { return std::mem_fn(__f); }
+           inline auto mem_fun(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)() const) { return std::mem_fn(__f); }
+           inline auto mem_fun_ref(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
 
-           // 1-argument versions (This fixes the G4INCLCDPP error)
            template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg)) { return std::mem_fn(__f); }
+           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg)) { return std::mem_fn(__f); }
+           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg) const) { return std::mem_fn(__f); }
+           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
            template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) { return std::mem_fn(__f); }
+           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
 
            // 4. Bridge random_shuffle
            template<typename _RAI>
@@ -146,9 +144,9 @@ class Geant4AT103 < Formula
 
            // 5. Add ptr_fun
            template<typename _Arg, typename _Result>
-           inline auto ptr_fun(_Result (*__f)(_Arg)) { return std::function<_Result(_Arg)>(__f); }
+           inline auto ptr_fun(_Result (*__f)(_Arg)) -> std::function<_Result(_Arg)> { return std::function<_Result(_Arg)>(__f); }
            template<typename _Arg1, typename _Arg2, typename _Result>
-           inline auto ptr_fun(_Result (*__f)(_Arg1, _Arg2)) { return std::function<_Result(_Arg1, _Arg2)>(__f); }
+           inline auto ptr_fun(_Result (*__f)(_Arg1, _Arg2)) -> std::function<_Result(_Arg1, _Arg2)> { return std::function<_Result(_Arg1, _Arg2)>(__f); }
          }
          #endif
          #endif
@@ -165,6 +163,7 @@ class Geant4AT103 < Formula
            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
            -DGEANT4_USE_SYSTEM_ZLIB=ON
            -DCMAKE_CXX_STANDARD=17
+           -DCMAKE_CXX_STANDARD_REQUIRED=ON
          ]
          args << "-DCMAKE_CXX_FLAGS=-include #{polyfill_path}"
 
