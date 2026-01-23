@@ -16,11 +16,9 @@ class Geant4AT103 < Formula
   depends_on "xerces-c" => :optional
 
   on_macos do
-    if MacOS.version >= :sequoia
-      depends_on "libice"
-      depends_on "libsm"
-      depends_on "libxext"
-    end
+    depends_on "libice"
+    depends_on "libsm"
+    depends_on "libxext"
   end
 
   resource "G4NDL" do
