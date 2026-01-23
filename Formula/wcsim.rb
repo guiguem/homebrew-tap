@@ -23,7 +23,7 @@ class Wcsim < Formula
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
 
-    #Create the libexec directory
+    # Create the libexec directory
     (prefix/"libexec").mkpath
 
     # Move the files from bin to libexec
