@@ -6,6 +6,12 @@ class Wcsim < Formula
     revision: "43b3dae41cdc6cdb6676956d44ae474b2fb88959"
   license "MIT"
 
+  bottle do
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/wcsim-1.12.29"
+    rebuild 1
+    sha256 cellar: :any, arm64_sequoia: "1bc33bdea225704f07e57ad2c60ad8c7c5c4128d49bcafee78c9ccd682c5778d"
+  end
+
   depends_on "cmake" => :build
   depends_on "gcc" => :build
   depends_on "geant4@10.3"
