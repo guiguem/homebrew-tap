@@ -1,0 +1,53 @@
+name: Build monthly midas bottle
+
+on:
+  schedule:
+    - cron: "0 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monthly-midas-bottle
+  cancel-in-progress: false
+
+jobs:
+  bottle:
+    strategy:
+      max-parallel: 1
+      matrix:
+        os: [macos-14, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Set up git
+        uses: Homebrew/actions/git-user-config@master
+
+      - name: Set monthly version
+        id: version
+        run: |
+          git fetch origin main
+          git rebase origin/main
+          VERSION="$(date -u +%Y-%m)"
+          VERSION="$VERSION" ruby -pi -e 'gsub(/version "[^"]+"/, "version \"#{ENV.fetch(\"VERSION\")}\"")' Formula/midas.rb
+          VERSION="$VERSION" ruby -pi -e 'gsub(%r{root_url "[^"]+"}, "root_url \"https://github.com/guiguem/homebrew-tap/releases/download/midas-#{ENV.fetch(\"VERSION\")}\"")' Formula/midas.rb
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build and publish bottle
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          brew test-bot --only-formulae \
+            --testing-formulae=midas \
+            --publish \
+            --root-url="https://github.com/guiguem/homebrew-tap/releases/download/midas-${VERSION}"
+
+      - name: Commit formula update
+        run: |
+          git add Formula/midas.rb
+          git commit -m "midas: update monthly bottle" || true
+          git push origin HEAD:main

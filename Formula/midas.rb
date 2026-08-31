@@ -1,17 +1,12 @@
 class Midas < Formula
   desc "Modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
-  url "https://gitlab.in2p3.fr/hk/clocks/midas.git",
-    tag:      "midas-mod-2025-04-a",
-    revision: "58b0f9f5d5d962f0957843c4a84b35f0d4eae25b"
-  version "midas-mod-2025-04-a"
+  url "https://gitlab.in2p3.fr/hk/clocks/midas.git", branch: "develop"
+  version "2026-08"
   license "GPL-1.0-only"
 
   bottle do
-    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-midas-mod-2025-04-a"
-    rebuild 3
-    sha256 cellar: :any, arm64_sequoia: "bf101b4fa2a9c37551424a01ffde4802af82d71728e26fdbf9184c073f7be62f"
-    sha256 cellar: :any, arm64_sonoma:  "df3778b4ba6a99fac744961d20e09f4903a99f0afde12de48cf027a981f22a63"
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-2026-08"
   end
 
   depends_on "cmake" => :build
