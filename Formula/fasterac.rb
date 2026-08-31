@@ -18,7 +18,7 @@ class Fasterac < Formula
   def install
     system "./configure", "--disable-silent-rules", *std_configure_args
     system "make", "install"
-    ENV.prepend_path "PKG_CONFIG_PATH", Formula["fasterac"].opt_libexec/"lib/pkgconfig"
+    ENV.prepend_path "PKG_CONFIG_PATH", formula_opt_libexec("fasterac")/"lib/pkgconfig"
   end
 
   # test do

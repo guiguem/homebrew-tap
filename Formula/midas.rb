@@ -20,10 +20,10 @@ class Midas < Formula
   depends_on "zstd"
 
   def install
-    ENV["ROOTSYS"] = Formula["root"].opt_prefix
+    ENV["ROOTSYS"] = formula_opt_prefix("root")
 
     # Ensure CMake knows exactly where ROOT is
-    root_prefix = Formula["root"].opt_prefix
+    root_prefix = formula_opt_prefix("root")
 
     args = std_cmake_args + %W[
       -DCMAKE_POSITION_INDEPENDENT_CODE=ON

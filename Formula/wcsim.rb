@@ -21,7 +21,7 @@ class Wcsim < Formula
     inreplace "src/WCSimRootGeom.cc", '#include "WCSimRootGeom.hh"',
 "#include \"WCSimRootGeom.hh\"\n#include \"TMath.h\""
 
-    Formula["geant4@10.3"].opt_prefix
+    formula_opt_prefix("geant4@10.3")
 
     std_cmake_args
 

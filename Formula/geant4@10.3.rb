@@ -78,111 +78,111 @@ class Geant4AT103 < Formula
   end
 
   def install
-       polyfill_path = buildpath/"g4_compat.h"
-       polyfill_path.write <<~EOS
-         #ifndef G4_COMPAT_H
-         #define G4_COMPAT_H
-         #if __cplusplus >= 201103L
-         #include <algorithm>
-         #include <functional>
-         #include <random>
-         #include <type_traits>
-         #include <iterator>
+    polyfill_path = buildpath/"g4_compat.h"
+    polyfill_path.write <<~EOS
+      #ifndef G4_COMPAT_H
+      #define G4_COMPAT_H
+      #if __cplusplus >= 201103L
+      #include <algorithm>
+      #include <functional>
+      #include <random>
+      #include <type_traits>
+      #include <iterator>
 
-         namespace std {
-           // 1. Re-inject binary_function and unary_function
-           template<typename _Arg1, typename _Arg2, typename _Result>
-           struct binary_function {
-             typedef _Arg1 first_argument_type;
-             typedef _Arg2 second_argument_type;
-             typedef _Result result_type;
-           };
+      namespace std {
+        // 1. Re-inject binary_function and unary_function
+        template<typename _Arg1, typename _Arg2, typename _Result>
+        struct binary_function {
+          typedef _Arg1 first_argument_type;
+          typedef _Arg2 second_argument_type;
+          typedef _Result result_type;
+        };
 
-           template<typename _Arg, typename _Result>
-           struct unary_function {
-             typedef _Arg argument_type;
-             typedef _Result result_type;
-           };
+        template<typename _Arg, typename _Result>
+        struct unary_function {
+          typedef _Arg argument_type;
+          typedef _Result result_type;
+        };
 
-           // 2. Re-inject bind2nd and bind1st with trailing return types
-           template<typename _Fn, typename _Tp>
-           inline auto bind2nd(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, std::placeholders::_1, __x)) {
-             return std::bind(__f, std::placeholders::_1, __x);
-           }
+        // 2. Re-inject bind2nd and bind1st with trailing return types
+        template<typename _Fn, typename _Tp>
+        inline auto bind2nd(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, std::placeholders::_1, __x)) {
+          return std::bind(__f, std::placeholders::_1, __x);
+        }
 
-           template<typename _Fn, typename _Tp>
-           inline auto bind1st(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, __x, std::placeholders::_1)) {
-             return std::bind(__f, __x, std::placeholders::_1);
-           }
+        template<typename _Fn, typename _Tp>
+        inline auto bind1st(const _Fn& __f, const _Tp& __x) -> decltype(std::bind(__f, __x, std::placeholders::_1)) {
+          return std::bind(__f, __x, std::placeholders::_1);
+        }
 
-           // 3. Re-inject mem_fun AND mem_fun_ref
-           template<typename _Ret, typename _Tp>
-           inline auto mem_fun(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp>
-           inline auto mem_fun(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        // 3. Re-inject mem_fun AND mem_fun_ref
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)()) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)() const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
 
-           template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
-           template<typename _Ret, typename _Tp, typename _Arg>
-           inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg)) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
+        template<typename _Ret, typename _Tp, typename _Arg>
+        inline auto mem_fun_ref(_Ret (_Tp::*__f)(_Arg) const) -> decltype(std::mem_fn(__f)) { return std::mem_fn(__f); }
 
-           // 4. Bridge random_shuffle
-           template<typename _RAI>
-           inline void random_shuffle(_RAI __first, _RAI __last) {
-             std::random_device __rd; std::mt19937 __g(__rd());
-             std::shuffle(__first, __last, __g);
-           }
-           template<typename _RAI, typename _RNG>
-           inline void random_shuffle(_RAI __first, _RAI __last, _RNG&&) {
-             std::random_device __rd; std::mt19937 __g(__rd());
-             std::shuffle(__first, __last, __g);
-           }
+        // 4. Bridge random_shuffle
+        template<typename _RAI>
+        inline void random_shuffle(_RAI __first, _RAI __last) {
+          std::random_device __rd; std::mt19937 __g(__rd());
+          std::shuffle(__first, __last, __g);
+        }
+        template<typename _RAI, typename _RNG>
+        inline void random_shuffle(_RAI __first, _RAI __last, _RNG&&) {
+          std::random_device __rd; std::mt19937 __g(__rd());
+          std::shuffle(__first, __last, __g);
+        }
 
-           // 5. Add ptr_fun
-           template<typename _Arg, typename _Result>
-           inline auto ptr_fun(_Result (*__f)(_Arg)) -> std::function<_Result(_Arg)> { return std::function<_Result(_Arg)>(__f); }
-           template<typename _Arg1, typename _Arg2, typename _Result>
-           inline auto ptr_fun(_Result (*__f)(_Arg1, _Arg2)) -> std::function<_Result(_Arg1, _Arg2)> { return std::function<_Result(_Arg1, _Arg2)>(__f); }
-         }
-         #endif
-         #endif
-       EOS
+        // 5. Add ptr_fun
+        template<typename _Arg, typename _Result>
+        inline auto ptr_fun(_Result (*__f)(_Arg)) -> std::function<_Result(_Arg)> { return std::function<_Result(_Arg)>(__f); }
+        template<typename _Arg1, typename _Arg2, typename _Result>
+        inline auto ptr_fun(_Result (*__f)(_Arg1, _Arg2)) -> std::function<_Result(_Arg1, _Arg2)> { return std::function<_Result(_Arg1, _Arg2)>(__f); }
+      }
+      #endif
+      #endif
+    EOS
 
-       mkdir "geant-build" do
-         args = %w[
-           ../
-           -DGEANT4_USE_OPENGL_X11=OFF
-           -DGEANT4_USE_RAYTRACER_X11=ON
-           -DGEANT4_BUILD_EXAMPLE=ON
-           -DGEANT4_INSTALL_DATA=OFF
-           -DGEANT4_BUILD_MULTITHREADED=OFF
-           -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-           -DGEANT4_USE_SYSTEM_ZLIB=ON
-           -DCMAKE_CXX_STANDARD=17
-           -DCMAKE_CXX_STANDARD_REQUIRED=ON
-           -DCMAKE_INSTALL_RPATH=#{lib}
-           -DCMAKE_INSTALL_NAME_DIR=#{lib}
-           -DCMAKE_SKIP_INSTALL_RPATH=FALSE
-         ]
-         args << "-DCMAKE_CXX_FLAGS=-include #{polyfill_path}"
+    mkdir "geant-build" do
+      args = %w[
+        ../
+        -DGEANT4_USE_OPENGL_X11=OFF
+        -DGEANT4_USE_RAYTRACER_X11=ON
+        -DGEANT4_BUILD_EXAMPLE=ON
+        -DGEANT4_INSTALL_DATA=OFF
+        -DGEANT4_BUILD_MULTITHREADED=OFF
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        -DGEANT4_USE_SYSTEM_ZLIB=ON
+        -DCMAKE_CXX_STANDARD=17
+        -DCMAKE_CXX_STANDARD_REQUIRED=ON
+        -DCMAKE_INSTALL_RPATH=#{lib}
+        -DCMAKE_INSTALL_NAME_DIR=#{lib}
+        -DCMAKE_SKIP_INSTALL_RPATH=FALSE
+      ]
+      args << "-DCMAKE_CXX_FLAGS=-include #{polyfill_path}"
 
-         args << "-DGEANT4_USE_QT=ON" if build.with? "qt"
-         args << "-DGEANT4_USE_G3TOG4=ON" if build.with? "g3tog4"
-         args << "-DGEANT4_USE_GDML=ON" if build.with? "gdml"
-         args << "-DGEANT4_USE_USOLIDS=ON" if build.with? "usolids"
-         args.concat(std_cmake_args)
-         system "cmake", *args
-         system "make", "install"
-       end
-       (include/"Geant4").install polyfill_path
+      args << "-DGEANT4_USE_QT=ON" if build.with? "qt"
+      args << "-DGEANT4_USE_G3TOG4=ON" if build.with? "g3tog4"
+      args << "-DGEANT4_USE_GDML=ON" if build.with? "gdml"
+      args << "-DGEANT4_USE_USOLIDS=ON" if build.with? "usolids"
+      args.concat(std_cmake_args)
+      system "cmake", *args
+      system "make", "install"
+    end
+    (include/"Geant4").install polyfill_path
   end
 
   def post_install
