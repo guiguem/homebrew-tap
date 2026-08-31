@@ -15,6 +15,10 @@ class Wcsim < Formula
   depends_on "cmake" => :build
   depends_on "gcc" => :build
   depends_on "geant4@10.3"
+  depends_on "libice"
+  depends_on "libsm"
+  depends_on "libx11"
+  depends_on "libxext"
   depends_on "root"
 
   def install
