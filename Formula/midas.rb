@@ -62,6 +62,12 @@ prefix.to_s
       inreplace file, %r{/tmp/midas-[^/"]+}, prefix.to_s if File.read(file).match?(%r{/tmp/midas-[^/"]+})
     end
 
+    cmake_dir = lib/"cmake/midas"
+    cmake_dir.mkpath
+    Dir["#{lib}/*.cmake"].each do |file|
+      mv file, cmake_dir
+    end
+
     # Only wrap binaries if they exist in source tree
     if (buildpath/"bin").exist?
       libexec.install Dir["bin/*"]
