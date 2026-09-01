@@ -1,12 +1,13 @@
-class Midas < Formula
-  desc "Modern data acquisition system developed at PSI and TRIUMF"
+# Old: class Midas < Formula
+class Modmidas < Formula
+  desc "Modified modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
-  url "https://bitbucket.org/tmidas/midas.git", branch: "develop"
+  url "https://gitlab.in2p3.fr/hk/clocks/midas.git", branch: "develop"
   version "2026-08"
   license "GPL-1.0-only"
 
   bottle do
-    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-2026-08"
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/modmidas-2026-08"
     sha256 cellar: :any, arm64_sequoia: "7480ff17486b05be2b4dccb93b0e1a8c634116dc8f6286f95d4d75393efa3053"
     sha256 cellar: :any, arm64_sonoma:  "e7f134a444f313a624308333fe8c92257790e23ca682f3d3a27d4b35a68b5b46"
   end
@@ -21,8 +22,8 @@ class Midas < Formula
   depends_on "zlib"
   depends_on "zstd"
 
-  # Prevents simultaneous linking with 'ModMidas'
-  conflicts_with "modmidas", because: "both install the same binaries and headers"
+  # Prevents simultaneous linking with 'Midas'
+  conflicts_with "midas", because: "both install the same binaries and headers"
 
   def install
     ENV["ROOTSYS"] = formula_opt_prefix("root")
@@ -77,7 +78,7 @@ prefix.to_s
       The exptab file (defined by $MIDAS_EXPTAB) can be produced for the first time via
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
       You should also set the MIDASSYS variable so that other projects can find this version of midas:
-        export MIDASSYS=$(brew --prefix midas)
+        export MIDASSYS=$(brew --prefix modmidas)
     EOS
   end
 
