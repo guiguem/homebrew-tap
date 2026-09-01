@@ -7,8 +7,9 @@ class Fasterac < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/fasterac-2.20.1"
-    sha256 arm64_sonoma: "300a375bc6acfede59b212bfba54c957a9562fdf0c4dcd8afa995dc0c1d46145"
-    sha256 x86_64_linux: "2e2fd835377a023289515d6be434e933a2a3e59aaedbbccd03f9943cb8441a96"
+    rebuild 1
+    sha256 arm64_sequoia: "24aa9c966d8a6097644ba013775ff87e4857bcc6ad95c18ab5ed8baddf585e38"
+    sha256 arm64_sonoma:  "98647bd42c2f8c331481968e1d149775630692c07942004f03c3993dfcb8100b"
   end
 
   depends_on "gcc" => :build
