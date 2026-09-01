@@ -8,8 +8,9 @@ class Wcsim < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/wcsim-1.12.29"
-    rebuild 1
-    sha256 cellar: :any, arm64_sequoia: "1bc33bdea225704f07e57ad2c60ad8c7c5c4128d49bcafee78c9ccd682c5778d"
+    rebuild 2
+    sha256 cellar: :any, arm64_sequoia: "17ed308dd26f8703e8a8b374c5082e08d5f0478c55f94b2055e733bcc4152407"
+    sha256 cellar: :any, arm64_sonoma:  "05cc67261487313c408779755e3335c65cf81dfeffbd0f0515e9b1aefc12ccc0"
   end
 
   depends_on "cmake" => :build
