@@ -8,8 +8,8 @@ class Modmidas < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/modmidas-2026-08"
-    sha256 cellar: :any, arm64_sequoia: "7480ff17486b05be2b4dccb93b0e1a8c634116dc8f6286f95d4d75393efa3053"
-    sha256 cellar: :any, arm64_sonoma:  "e7f134a444f313a624308333fe8c92257790e23ca682f3d3a27d4b35a68b5b46"
+    sha256 cellar: :any, arm64_sequoia: "8331f59ecdeb22142b5ec534b74e4e807f16026747ea9ebe42d6ffb3bc4c0718"
+    sha256 cellar: :any, arm64_sonoma:  "f20799c64dcdedac2e98049287865d036d58cd2e41f4ddb629c3cf53a35dab3c"
   end
 
   depends_on "cmake" => :build
