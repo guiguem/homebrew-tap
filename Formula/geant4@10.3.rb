@@ -200,13 +200,18 @@ class Geant4AT103 < Formula
 
     # Fix geant4-config script
     if File.exist?(bin/"geant4-config")
-      inreplace bin/"geant4-config", %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+      geant4_config = bin/"geant4-config"
+      if File.read(geant4_config).match?(%r{/private/tmp/geant4.*g4_compat\.h})
+        inreplace geant4_config, %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+      end
     end
 
     # Fix Geant4Config.cmake and related CMake files
     # These are usually in lib/Geant4-10.3.3/ or lib/cmake/Geant4/
     Dir.glob("#{lib}/**/Geant4Config.cmake").each do |cmake_file|
-      inreplace cmake_file, %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+      if File.read(cmake_file).match?(%r{/private/tmp/geant4.*g4_compat\.h})
+        inreplace cmake_file, %r{/private/tmp/geant4.*g4_compat\.h}, permanent_include
+      end
     end
   end
 
