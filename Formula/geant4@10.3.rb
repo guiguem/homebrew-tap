@@ -217,7 +217,7 @@ class Geant4AT103 < Formula
       data libraries. These can be set through:
 
       For bash users:
-        . $(brew --prefix geant4@10.3)/bin/geant4.sh
+        cd $(brew --prefix geant4@10.3)/bin; . geant4.sh; cd -
       For zsh users:
         pushd $(brew --prefix geant4@10.3)/bin >/dev/null; . geant4.sh; popd >/dev/null
       For csh/tcsh users:
