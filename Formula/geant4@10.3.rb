@@ -6,9 +6,10 @@ class Geant4AT103 < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/geant4@10.3-10.3.3"
-    rebuild 1
-    sha256 cellar: :any, arm64_sequoia: "955ba51c5eab9019016e7cdd60d77a198fa2a9a86a46543a3c1928197f429561"
-    sha256 cellar: :any, arm64_sonoma:  "3daf78624a2cd81cc263239a6a79d8d29535e3dbf0451822084c31f22b4457c5"
+    rebuild 2
+    sha256 cellar: :any, arm64_tahoe:   "fc883bec85b174012fe0122a1796cb2e5b710a1320555d1783e3fc35da12dbb6"
+    sha256 cellar: :any, arm64_sequoia: "269100ef1adc14b61eb8eabdafcc21f3add3284b3316357aebdb8be720aeb08b"
+    sha256 cellar: :any, arm64_sonoma:  "e3c67c2418a476f588903a68bdb5b620da5c75e05bbb68da280e2883edaeda29"
   end
 
   option "with-g3tog4", "Use G3toG4 Library"
