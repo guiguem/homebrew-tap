@@ -2,11 +2,11 @@ class Midas < Formula
   desc "Modern data acquisition system developed at PSI and TRIUMF"
   homepage "https://daq00.triumf.ca/MidasWiki/index.php/Main_Page"
   url "https://bitbucket.org/tmidas/midas.git", branch: "develop"
-  version "2026-08"
+  version "2026-09"
   license "GPL-1.0-only"
 
   bottle do
-    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-2026-08"
+    root_url "https://github.com/guiguem/homebrew-tap/releases/download/midas-2026-09"
     rebuild 1
     sha256 cellar: :any, arm64_sequoia: "f6c3d01df07ef9e68c040e3c1d4dbebaaf878c9d5f97c92efa44c025714325f8"
     sha256 cellar: :any, arm64_sonoma:  "0886a486911d80317943e9e79b7b90f64110a27250138fc59f71f201245dadf0"
