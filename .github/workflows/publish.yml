@@ -14,7 +14,8 @@ jobs:
       pull-requests: write
     steps:
       - name: Set up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        # Check the Homebrew/actions repo releases for the latest CalVer tag
+        uses: homebrew/actions/setup-homebrew@2026.07.10.1
 
       - name: Set up git
         uses: Homebrew/actions/git-user-config@master
