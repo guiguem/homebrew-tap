@@ -25,6 +25,12 @@ class Midas < Formula
   # Prevents simultaneous linking with 'ModMidas'
   conflicts_with "modmidas", because: "both install the same binaries and headers"
 
+  service do
+    run ["/bin/sh", opt_libexec/"midas-service"]
+    keep_alive true
+    environment_variables MIDAS_EXPTAB: "#{Dir.home}/online/exptab", MIDASSYS: opt_prefix.to_s
+  end
+
   def install
     ENV["ROOTSYS"] = formula_opt_prefix("root")
 
@@ -76,6 +82,62 @@ prefix.to_s
     end
   end
 
+  post_install_steps do
+    write_file "libexec/midas-service", <<~SH, base: :prefix
+      #!/bin/sh
+      midas_bin="$(cd "$(dirname "$0")/../bin" && pwd)"
+      mserver_pid=
+      mhttpd_pid=
+      mlogger_pid=
+
+      stop_children() {
+        for child_pid in "$mhttpd_pid" "$mlogger_pid"; do
+          [ -n "$child_pid" ] || continue
+          kill "$child_pid" 2>/dev/null || true
+        done
+        for child_pid in "$mhttpd_pid" "$mlogger_pid"; do
+          [ -n "$child_pid" ] || continue
+          wait "$child_pid" 2>/dev/null || true
+        done
+        if [ -n "$mserver_pid" ]; then
+          kill "$mserver_pid" 2>/dev/null || true
+          wait "$mserver_pid" 2>/dev/null || true
+        fi
+      }
+      trap 'stop_children; exit 0' HUP INT TERM
+
+      "$midas_bin/mserver" &
+      mserver_pid=$!
+      attempt=0
+      while ! /usr/bin/nc -z 127.0.0.1 1175; do
+        if ! kill -0 "$mserver_pid" 2>/dev/null; then
+          wait "$mserver_pid"
+          exit 1
+        fi
+        attempt=$((attempt + 1))
+        if [ "$attempt" -ge 30 ]; then
+          stop_children
+          exit 1
+        fi
+        sleep 1
+      done
+
+      "$midas_bin/mhttpd" &
+      mhttpd_pid=$!
+      "$midas_bin/mlogger" &
+      mlogger_pid=$!
+
+      while kill -0 "$mhttpd_pid" 2>/dev/null &&
+            kill -0 "$mlogger_pid" 2>/dev/null &&
+            kill -0 "$mserver_pid" 2>/dev/null; do
+        sleep 1
+      done
+
+      stop_children
+      exit 1
+    SH
+  end
+
   def caveats
     <<~EOS
       You still need to define the exptab file and export the MIDAS_EXPTAB environment variable to use the midas executables correctly.
@@ -85,6 +147,10 @@ prefix.to_s
          echo "myexpt $HOME/online $USER" > $MIDAS_EXPTAB
       You should also set the MIDASSYS variable so that other projects can find this version of midas:
         export MIDASSYS=$(brew --prefix midas)
+
+      The brew service starts mhttpd, mlogger, and mserver together, setting MIDAS_EXPTAB to $HOME/online/exptab and MIDASSYS to this installation automatically.
+      After creating the exptab file and defining the experiment name, start the service with:
+        brew services start midas
     EOS
   end
 
