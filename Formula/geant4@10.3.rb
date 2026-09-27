@@ -187,9 +187,12 @@ class Geant4AT103 < Formula
     (include/"Geant4").install polyfill_path
   end
 
-  def post_install
+  def post_install_steps
     resources.each do |r|
-      (share/"Geant4-#{version}/data/#{r.name}#{r.version}").install r
+      data_path = share/"Geant4-#{version}/data/#{r.name}#{r.version}"
+      next if data_path.directory?
+
+      data_path.install r
     end
 
     # Define the permanent path
