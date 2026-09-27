@@ -187,7 +187,7 @@ class Geant4AT103 < Formula
     (include/"Geant4").install polyfill_path
   end
 
-  def post_install
+  def post_install_steps
     resources.each do |r|
       (share/"Geant4-#{version}/data/#{r.name}#{r.version}").install r
     end
