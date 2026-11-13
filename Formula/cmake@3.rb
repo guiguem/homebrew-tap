@@ -8,8 +8,12 @@ class CmakeAT3 < Formula
 
   bottle do
     root_url "https://github.com/guiguem/homebrew-tap/releases/download/cmake@3-3.31.10"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "40de3abf180237e469bff6efcff35df47acb1ed5720d82947fc988b2e1859efa"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "a457446cd90bf032c7e9fe6c60829889fcd5cde69663c04a9bd6c966abe7e869"
+    # The previously published arm64_sequoia / arm64_sonoma bottles were built
+    # from the old patched sources and broke symlinked launches ("Could not
+    # find CMAKE_ROOT !!!"); they were removed. Arm64 binaries for macOS 15/14
+    # must be rebuilt from the current (unpatched) formula before being
+    # re-published. This bottle was built from stock v3.31.10 sources.
+    sha256 cellar: :any_skip_relocation, arm64_tahoe: "aa88ee148312461e6a0b1ff065488dd04308c8dce3f319055f782a9b153623b9"
   end
 
   uses_from_macos "ncurses"
@@ -18,10 +22,15 @@ class CmakeAT3 < Formula
     depends_on "openssl@3"
   end
 
-  # Prevent the formula from breaking on version/revision bumps.
-  # Check if possible to remove in 3.32.0
-  # https://gitlab.kitware.com/cmake/cmake/-/merge_requests/9978
-  patch :DATA
+  # NOTE: The old homebrew-core patch that disabled symlink resolution in
+  # cmSystemTools::FindCMakeResources (workaround for Kitware issue #19849) has
+  # been dropped. It broke launching cmake through a symlinked path ("Could not
+  # find CMAKE_ROOT !!!"): on macOS `_NSGetExecutablePath` returns the invocation
+  # path without resolving symlinks, and without GetRealPath the install-tree
+  # probe cannot find the Modules directory. Stock v3.31.10 resolves symlinks to
+  # the Cellar prefix, which works in all invocation forms. (CMake 4.x later
+  # implemented proper "preserve symlinks if possible" handling; see the
+  # symlink-regression test below.)
 
   # The completions were removed because of problems with system bash
 
@@ -65,31 +74,16 @@ class CmakeAT3 < Formula
     (testpath/"CMakeLists.txt").write("find_package(Ruby)")
     system bin/"cmake", "."
 
+    # Regression test: a real configure through a symlinked cmake must
+    # succeed. This catches the "Could not find CMAKE_ROOT !!!" failure caused
+    # by the removed patch, which disabled symlink resolution.
+    (testpath/"sym/CMakeLists.txt").write("project(SymlinkCheck NONE)")
+    ln_sf bin/"cmake", testpath/"sym/cmake"
+    assert system(testpath/"sym/cmake", "-S", (testpath/"sym").to_s,
+                  "-B", (testpath/"sym/build").to_s)
+
     # These should be supplied in a separate cmake-docs formula.
     refute_path_exists doc/"html"
     refute_path_exists man
   end
 end
-
-__END__
-diff --git a/Source/cmSystemTools.cxx b/Source/cmSystemTools.cxx
-index 5ad0439c..161257cf 100644
---- a/Source/cmSystemTools.cxx
-+++ b/Source/cmSystemTools.cxx
-@@ -2551,7 +2551,7 @@ void cmSystemTools::FindCMakeResources(const char* argv0)
-     _NSGetExecutablePath(exe_path, &exe_path_size);
-   }
-   exe_dir =
--    cmSystemTools::GetFilenamePath(cmSystemTools::GetRealPath(exe_path));
-+    cmSystemTools::GetFilenamePath(exe_path);
-   if (exe_path != exe_path_local) {
-     free(exe_path);
-   }
-@@ -2572,7 +2572,6 @@ void cmSystemTools::FindCMakeResources(const char* argv0)
-   std::string exe;
-   if (cmSystemTools::FindProgramPath(argv0, exe, errorMsg)) {
-     // remove symlinks
--    exe = cmSystemTools::GetRealPath(exe);
-     exe_dir = cmSystemTools::GetFilenamePath(exe);
-   } else {
-     // ???
